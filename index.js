@@ -1,7 +1,5 @@
 'use strict';
 
-const LO_FIELD = 0x10000000000000;
-
 function A64(num) {
   this.hi = 0;
   this.lo = 0;
