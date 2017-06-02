@@ -5,7 +5,7 @@ const BN = require('bn.js');
 const A64 = require('../');
 
 function rnd32() {
-  return (Math.random() * 0x10000000) >>> 0;
+  return (Math.random() * 0x10000000) | 0;
 }
 
 describe('Awesome64', () => {
