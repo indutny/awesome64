@@ -32,7 +32,7 @@ describe('Awesome64', () => {
     });
 
     it('should cross-check against BN', () => {
-      for (let i = 0; i < 1e4; i++) {
+      for (let i = 0; i < 1e5; i++) {
         const a = new A64();
         const b = new A64();
 
@@ -66,8 +66,22 @@ describe('Awesome64', () => {
       assert.equal(a.mul(b).toString(), '1dffffda50000126');
     });
 
+    it('should mul with negative self.lo', () => {
+      const a = new A64(0xeffffeda);
+      const b = new A64(0x1fffffff);
+
+      assert.equal(a.mul(b).toString(), '1dffffda50000126');
+    });
+
+    it('should mul with negative self.lo and other.lo', () => {
+      const a = new A64(0xeffffeda);
+      const b = new A64(0xeffffeda);
+
+      assert.equal(a.mul(b).toString(), 'e0fffdd8c00151a4');
+    });
+
     it('should cross-check against BN', () => {
-      for (let i = 0; i < 1e4; i++) {
+      for (let i = 0; i < 1e5; i++) {
         const a = new A64();
         const b = new A64();
 

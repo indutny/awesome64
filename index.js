@@ -10,14 +10,14 @@ function A64(num) {
 module.exports = A64;
 
 A64.prototype.from = function from(num) {
-  this.hi = (num / 0x100000000) >>> 0;
-  this.lo = num >>> 0;
+  this.hi = (num / 0x100000000) | 0;
+  this.lo = num | 0;
 };
 
 A64.prototype.clone = function clone() {
   const res = new A64();
-  res.hi = this.hi >>> 0;
-  res.lo = this.lo >>> 0;
+  res.hi = this.hi | 0;
+  res.lo = this.lo | 0;
   return res;
 };
 
@@ -29,25 +29,44 @@ function pad8(s) {
 }
 
 A64.prototype.toString = function toString() {
-  return pad8(this.hi.toString(16)) + pad8(this.lo.toString(16));
+  const hi = this.hi >>> 0;
+  const lo = this.lo >>> 0;
+  return pad8(hi.toString(16)) + pad8(lo.toString(16));
 };
 
 A64.prototype.iadd = function iadd(other) {
-  const lo = (this.lo + other.lo) >>> 0;
-  const carry = (lo < this.lo) | (lo < other.lo);
+  const selfLo = this.lo | 0;
+  const otherLo = other.lo | 0;
+  const selfHi = this.hi | 0;
+  const otherHi = other.hi | 0;
 
-  this.hi = ((this.hi + other.hi) | 0 + carry) >>> 0;
-  this.lo = lo;
+  const lo = (selfLo + otherLo) | 0;
+  const carry = (lo < selfLo) | (lo < otherLo);
+
+  this.hi = ((selfHi + otherHi) | 0 + carry) | 0;
+  this.lo = lo | 0;
 
   return this;
 };
 
 A64.prototype.imul = function imul(other) {
-  const hi = (Math.imul(this.hi, other.lo) + Math.imul(other.hi, this.lo)) | 0;
-  const carry = Math.floor((this.lo * other.lo) / 0x100000000) | 0;
+  const selfLo = this.lo | 0;
+  const otherLo = other.lo | 0;
+  const selfHi = this.hi | 0;
+  const otherHi = other.hi | 0;
 
-  this.hi = (hi + carry) >>> 0;
-  this.lo = Math.imul(this.lo, other.lo) >>> 0;
+  const hi = (Math.imul(selfHi, otherLo) + Math.imul(otherHi, selfLo)) | 0;
+  let carry = ((selfLo * otherLo) / 0x100000000) | 0;
+
+  if (selfLo <0 && otherLo < 0)
+    carry = (carry + otherLo + selfLo) | 0;
+  else if (otherLo < 0)
+    carry = (carry + selfLo - 1) | 0;
+  else if (selfLo < 0)
+    carry = (carry + otherLo - 1) | 0;
+
+  this.hi = (hi + carry) | 0;
+  this.lo = Math.imul(selfLo, otherLo) | 0;
 
   return this;
 };
