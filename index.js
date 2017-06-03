@@ -60,9 +60,9 @@ A64.prototype.imul = function imul(other) {
 
   if (selfLo < 0 && otherLo < 0)
     carry = (carry + otherLo + selfLo) | 0;
-  else if (otherLo < 0)
+  else if (selfLo > 0 && otherLo < 0)
     carry = (carry + selfLo - 1) | 0;
-  else if (selfLo < 0)
+  else if (selfLo < 0 && otherLo > 0)
     carry = (carry + otherLo - 1) | 0;
 
   this.hi = (hi + carry) | 0;

@@ -136,5 +136,24 @@ describe('Awesome64', () => {
                      an.mul(bn).maskn(64).toString(16, 16));
       }
     });
+
+    it('should cross-check against BN with zero low bits', () => {
+      for (let i = 0; i < 1e5; i++) {
+        const a = new A64();
+        const b = new A64();
+
+        a.hi = rnd32();
+        a.lo = 0;
+
+        b.hi = rnd32();
+        b.lo = rnd32();
+
+        const an = new BN(a.toString(16), 16);
+        const bn = new BN(b.toString(16), 16);
+
+        assert.equal(a.mul(b).toString(),
+                     an.mul(bn).maskn(64).toString(16, 16));
+      }
+    });
   });
 });
