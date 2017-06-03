@@ -35,16 +35,16 @@ A64.prototype.toString = function toString() {
 };
 
 A64.prototype.iadd = function iadd(other) {
-  const selfLo = this.lo | 0;
-  const otherLo = other.lo | 0;
+  const selfLo = this.lo >>> 0;
+  const otherLo = other.lo >>> 0;
   const selfHi = this.hi | 0;
   const otherHi = other.hi | 0;
 
-  const lo = (selfLo + otherLo) | 0;
-  const carry = (lo < selfLo) | (lo < otherLo);
+  const sum = selfLo + otherLo;
+  const carry = (sum >= 0x100000000) | 0;
 
-  this.hi = ((selfHi + otherHi) | 0 + carry) | 0;
-  this.lo = lo | 0;
+  this.hi = (((selfHi + otherHi) | 0) + carry) | 0;
+  this.lo = sum | 0;
 
   return this;
 };
@@ -58,7 +58,7 @@ A64.prototype.imul = function imul(other) {
   const hi = (Math.imul(selfHi, otherLo) + Math.imul(otherHi, selfLo)) | 0;
   let carry = ((selfLo * otherLo) / 0x100000000) | 0;
 
-  if (selfLo <0 && otherLo < 0)
+  if (selfLo < 0 && otherLo < 0)
     carry = (carry + otherLo + selfLo) | 0;
   else if (otherLo < 0)
     carry = (carry + selfLo - 1) | 0;

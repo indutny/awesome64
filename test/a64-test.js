@@ -5,7 +5,7 @@ const BN = require('bn.js');
 const A64 = require('../');
 
 function rnd32() {
-  return (Math.random() * 0x10000000) | 0;
+  return (Math.random() * 0x100000000) | 0;
 }
 
 describe('Awesome64', () => {
@@ -31,6 +31,39 @@ describe('Awesome64', () => {
       assert.equal(a.add(b).toString(), '8000000000000000');
     });
 
+    it('should not fail on overflow regression', () => {
+      const a = new A64();
+      const b = new A64();
+      a.lo = 0x80000000 | 0;
+      b.lo = 0x80000000 | 0;
+
+      assert.equal(a.add(b).toString(), '0000000100000000');
+    });
+
+    it('should not fail on overflow regression#2', () => {
+      const a = new A64();
+      const b = new A64();
+
+      a.hi = -1401635801;
+      a.lo = 1372527499;
+      b.hi = 283000954;
+      b.lo = -987133892;
+
+      assert.equal(a.add(b).toString(), 'bd52fca216f8a3c7');
+    });
+
+    it('should not fail on overflow regression#3', () => {
+      const a = new A64();
+      const b = new A64();
+
+      a.hi = 427011201;
+      a.lo = -1128669244;
+      b.hi = 2117984826;
+      b.lo = 102420856;
+
+      assert.equal(a.add(b).toString(), '97b18ebbc2d4b13c');
+    });
+
     it('should cross-check against BN', () => {
       for (let i = 0; i < 1e5; i++) {
         const a = new A64();
@@ -45,8 +78,13 @@ describe('Awesome64', () => {
         const an = new BN(a.toString(16), 16);
         const bn = new BN(b.toString(16), 16);
 
-        assert.equal(a.add(b).toString(),
-                     an.add(bn).maskn(64).toString(16, 16));
+        try {
+          assert.equal(a.add(b).toString(),
+                       an.add(bn).maskn(64).toString(16, 16));
+        } catch (e) {
+          console.error(a, b);
+          throw e;
+        }
       }
     });
   });
