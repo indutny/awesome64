@@ -35,13 +35,19 @@ A64.prototype.toString = function toString() {
 };
 
 A64.prototype.iadd = function iadd(other) {
-  const selfLo = this.lo >>> 0;
-  const otherLo = other.lo >>> 0;
+  const selfLo = this.lo | 0;
+  const otherLo = other.lo | 0;
   const selfHi = this.hi | 0;
   const otherHi = other.hi | 0;
 
-  const sum = selfLo + otherLo;
-  const carry = (sum >= 0x100000000) | 0;
+  const sum = (selfLo + otherLo) | 0;
+
+  const sumSign = sum >> 31;
+  const selfSign = selfLo >> 31;
+  const otherSign = otherLo >> 31;
+
+  const carry = ((selfSign & otherSign) |
+                 ((~sumSign) & (selfSign ^ otherSign))) & 1;
 
   this.hi = (((selfHi + otherHi) | 0) + carry) | 0;
   this.lo = sum | 0;

@@ -64,6 +64,18 @@ describe('Awesome64', () => {
       assert.equal(a.add(b).toString(), '97b18ebbc2d4b13c');
     });
 
+    it('should not fail on overflow regression#4', () => {
+      const a = new A64();
+      const b = new A64();
+
+      a.hi = -1653411800;
+      a.lo = 816565052;
+      b.hi = -566093177;
+      b.lo = 1552065947;
+
+      assert.equal(a.add(b).toString(), '7bb50aaf8d2e70d7');
+    });
+
     it('should cross-check against BN', () => {
       for (let i = 0; i < 1e5; i++) {
         const a = new A64();
