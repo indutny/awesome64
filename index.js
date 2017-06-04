@@ -47,7 +47,7 @@ A64.prototype.iadd = function iadd(other) {
   const otherSign = otherLo >> 31;
 
   const carry = ((selfSign & otherSign) |
-                 ((~sumSign) & (selfSign ^ otherSign))) & 1;
+                 (~sumSign & (selfSign ^ otherSign))) & 1;
 
   this.hi = (((selfHi + otherHi) | 0) + carry) | 0;
   this.lo = sum | 0;
@@ -67,8 +67,8 @@ A64.prototype.imul = function imul(other) {
   const selfSign = selfLo >> 31;
   const otherSign = otherLo >> 31;
 
-  const selfPositive = (~selfSign) & (~((~selfLo) & (selfLo - 1)) >> 31);
-  const otherPositive = (~otherSign) & (~((~otherLo) & (otherLo - 1)) >> 31);
+  const selfPositive = ~selfSign & (~(~selfLo & (selfLo - 1)) >> 31);
+  const otherPositive = ~otherSign & (~(~otherLo & (otherLo - 1)) >> 31);
 
   // If both negative
   carry = (carry + (selfSign & otherSign & (otherLo + selfLo))) | 0;
