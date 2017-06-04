@@ -32,8 +32,9 @@ function warm() {
 
 warm();
 
-const A = (Math.random() * 0xffffffff) >>> 0;
-const B = (Math.random() * 0xffffffff) >>> 0;
+// Just two primes
+const A = 0x7fe5be05;
+const B = 0xae302bbd;
 
 // Addition
 {
