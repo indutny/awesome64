@@ -1,6 +1,6 @@
 {
   "name": "awesome64",
-  "version": "1.0.0-alpha5",
+  "version": "1.0.0-alpha6",
   "description": "Awesome Int64 num implementation",
   "main": "index.js",
   "scripts": {
