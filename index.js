@@ -62,20 +62,7 @@ A64.prototype.imul = function imul(other) {
   const otherHi = other.hi | 0;
 
   const hi = (Math.imul(selfHi, otherLo) + Math.imul(otherHi, selfLo)) | 0;
-  let carry = ((selfLo * otherLo) * (1 / 0x100000000)) | 0;
-
-  const selfSign = selfLo >> 31;
-  const otherSign = otherLo >> 31;
-
-  const selfPositive = ~selfSign & (~(~selfLo & (selfLo - 1)) >> 31);
-  const otherPositive = ~otherSign & (~(~otherLo & (otherLo - 1)) >> 31);
-
-  // If both negative
-  carry = (carry + (selfSign & otherSign & (otherLo + selfLo))) | 0;
-  // If `self < 0` & `other > 0`
-  carry = (carry + (selfSign & otherPositive & (otherLo - 1))) | 0;
-  // If `self > 0` & `other < 0`
-  carry = (carry + (selfPositive & otherSign & (selfLo - 1))) | 0;
+  let carry = (((selfLo >>> 0) * (otherLo >>> 0)) * (1 / 0x100000000)) | 0;
 
   this.hi = (hi + carry) | 0;
   this.lo = Math.imul(selfLo, otherLo) | 0;
