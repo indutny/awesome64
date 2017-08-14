@@ -7,8 +7,25 @@ function rnd32() {
   return (Math.random() * 0x100000000) | 0;
 }
 
+const start = Date.now();
 
-for (let i = 0; ; i++) {
+function toBN(num) {
+  const hi = num.hi >>> 0;
+  const lo = num.lo >>> 0;
+
+  return new BN([
+    lo & 0xff,
+    (lo >>> 8) & 0xff,
+    (lo >>> 16) & 0xff,
+    (lo >>> 24) & 0xff,
+    hi & 0xff,
+    (hi >>> 8) & 0xff,
+    (hi >>> 16) & 0xff,
+    (hi >>> 24) & 0xff,
+  ], 'le');
+}
+
+for (let i = 1; ; i++) {
   const a = new A64();
   const b = new A64();
 
@@ -18,11 +35,15 @@ for (let i = 0; ; i++) {
   b.hi = rnd32();
   b.lo = rnd32();
 
-  const an = new BN(a.toString(16), 16);
-  const bn = new BN(b.toString(16), 16);
+  const an = toBN(a);
+  const bn = toBN(b);
 
-  if (i % 0x1000000 === 0)
-    console.log('===== ITERATION 0x%s =====', i.toString(16));
+  if (i % 0x100000 === 0) {
+    const now = Date.now();
+    const speed = i * 1000 / (now - start);
+    console.log('===== ITERATION num=0x%s speed=%d =====', i.toString(16),
+                speed.toFixed(0));
+  }
 
   if (a.mul(b).toString() === an.mul(bn).maskn(64).toString(16, 16))
     continue;
