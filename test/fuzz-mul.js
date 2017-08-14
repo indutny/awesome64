@@ -7,7 +7,8 @@ function rnd32() {
   return (Math.random() * 0x100000000) | 0;
 }
 
-for (;;) {
+
+for (let i = 0; ; i++) {
   const a = new A64();
   const b = new A64();
 
@@ -20,9 +21,13 @@ for (;;) {
   const an = new BN(a.toString(16), 16);
   const bn = new BN(b.toString(16), 16);
 
+  if (i % 0x1000000 === 0)
+    console.log('===== ITERATION 0x%s =====', i.toString(16));
+
   if (a.mul(b).toString() === an.mul(bn).maskn(64).toString(16, 16))
     continue;
 
+  console.log('===== FAILURE =====');
   console.log(a);
   console.log(b);
   console.log(a.mul(b), an.mul(bn).maskn(64));
