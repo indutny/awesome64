@@ -116,11 +116,30 @@ describe('Awesome64', () => {
       assert.equal(a.mul(b).toString(), '1dffffda50000126');
     });
 
+    it('should mul with rounding regression', () => {
+      const a = new A64(0);
+      const b = new A64(0);
+
+      a.hi = 0x7b035c56;
+      a.lo = 0x6879b7c1;
+      b.hi = 0xeff357fe;
+      b.lo = 0xf55cb125;
+
+      assert.equal(a.mul(b).toString(), '9cc807d0ffffffe5');
+    });
+
     it('should mul with negative self.lo', () => {
       const a = new A64(0xeffffeda);
       const b = new A64(0x1fffffff);
 
       assert.equal(a.mul(b).toString(), '1dffffda50000126');
+    });
+
+    it('should mul with negative self.lo and other.lo', () => {
+      const a = new A64(0xeffffeda);
+      const b = new A64(0xeffffeda);
+
+      assert.equal(a.mul(b).toString(), 'e0fffdd8c00151a4');
     });
 
     it('should mul with negative self.lo and other.lo', () => {
