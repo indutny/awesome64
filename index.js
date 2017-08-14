@@ -63,8 +63,8 @@ A64.prototype.imul = function imul(other) {
 
   const hi = (Math.imul(selfHi, otherLo) + Math.imul(otherHi, selfLo)) | 0;
   const lo = Math.imul(selfLo, otherLo) | 0;
-  let carry = (((selfLo >>> 0) * (otherLo >>> 0) - (lo >>> 0)) *
-               (1 / 0x100000000)) | 0;
+  const carry = (((selfLo >>> 0) * (otherLo >>> 0) - (lo >>> 0)) *
+                 (1 / 0x100000000)) | 0;
 
   this.hi = (hi + carry) | 0;
   this.lo = lo;
